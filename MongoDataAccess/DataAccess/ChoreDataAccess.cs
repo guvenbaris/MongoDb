@@ -13,7 +13,6 @@ namespace MongoDataAccess.DataAccess
         private const string UserCollection = "users";
         private const string ChoreHistoryCollection = "chore_history";
 
-
         private IMongoCollection<T> ConnectionToMongo<T>(in string collection)
         {
             var client = new MongoClient(ConnectionString);
@@ -41,7 +40,6 @@ namespace MongoDataAccess.DataAccess
             var results = await choresCollection.FindAsync(c=>c.AssignedTo.Id == user.Id);
             return results.ToList();
         }
-
 
         public Task CreateUser(UserModel user)
         {

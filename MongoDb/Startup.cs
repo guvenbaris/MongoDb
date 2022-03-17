@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MongoDataAccess.DataAccess;
 using MongoDb.DataOperation;
 
 namespace MongoDb
@@ -33,6 +34,7 @@ namespace MongoDb
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MongoDb", Version = "v1" });
             });
             services.AddScoped<GenreRepository>();
+            services.AddScoped<ChoreDataAccess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
