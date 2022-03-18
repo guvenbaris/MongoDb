@@ -16,11 +16,8 @@ namespace MongoDb.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-
             var result = _genreRepository.GetAll().Result;
-
             return Ok(result);
         }
-
     }
 }

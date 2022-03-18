@@ -20,14 +20,14 @@ namespace MongoDataAccess.DataAccess
             return db.GetCollection<T>(collection);
         }
 
-        private async Task<List<UserModel>> GetAllUsers()
+        public async Task<List<UserModel>> GetAllUsers()
         {
             var usersCollection = ConnectionToMongo<UserModel>(UserCollection);
             var results = await usersCollection.FindAsync(_ => true);
             return results.ToList();
         }
 
-        private async Task<List<ChoreModel>> GetAllChores()
+        public async Task<List<ChoreModel>> GetAllChores()
         {
             var choresCollection = ConnectionToMongo<ChoreModel>(ChoreCollection);
             var results = await choresCollection.FindAsync(_ => true);
@@ -53,17 +53,28 @@ namespace MongoDataAccess.DataAccess
             return choresCollection.InsertOneAsync(chore);
         }
 
-        public Task UpdateChore(ChoreModel chore)
+        public Task UpdateChoreModel(ChoreModel chore)
         {
             var choresCollection = ConnectionToMongo<ChoreModel>(ChoreCollection);
             var filter = Builders<ChoreModel>.Filter.Eq("Id", chore.Id);
             return choresCollection.ReplaceOneAsync(filter, chore, new ReplaceOptions {IsUpsert = true});
         }
         
-        public Task DeleteChore(ChoreModel chore)
+        public Task DeleteChoreModel(ChoreModel chore)
         {
             var choresCollection = ConnectionToMongo<ChoreModel>(ChoreCollection);
             return choresCollection.DeleteOneAsync(c => c.Id == chore.Id);
+        }
+
+        public async Task CompleteChore(ChoreModel chore)
+        {
+            var choresCollection = ConnectionToMongo<ChoreModel>(ChoreCollection);
+            var filter = Builders<ChoreModel>.Filter.Eq("Id", chore.Id);
+            await choresCollection.ReplaceOneAsync(filter, chore);
+
+            var choreHistoryCollection = ConnectionToMongo<ChoreHistoryModel>(ChoreHistoryCollection);
+            await choreHistoryCollection.InsertOneAsync(new ChoreHistoryModel(chore));
+
         }
     }
 }
