@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using MongoDataAccess.Models;
+using Domain.Entities;
 using MongoDB.Driver;
 
 namespace MongoDataAccess.DataAccess
@@ -68,13 +69,39 @@ namespace MongoDataAccess.DataAccess
 
         public async Task CompleteChore(ChoreModel chore)
         {
-            var choresCollection = ConnectionToMongo<ChoreModel>(ChoreCollection);
-            var filter = Builders<ChoreModel>.Filter.Eq("Id", chore.Id);
-            await choresCollection.ReplaceOneAsync(filter, chore);
+            //var choresCollection = ConnectionToMongo<ChoreModel>(ChoreCollection);
+            //var filter = Builders<ChoreModel>.Filter.Eq("Id", chore.Id);
+            //await choresCollection.ReplaceOneAsync(filter, chore);
 
-            var choreHistoryCollection = ConnectionToMongo<ChoreHistoryModel>(ChoreHistoryCollection);
-            await choreHistoryCollection.InsertOneAsync(new ChoreHistoryModel(chore));
+            //var choreHistoryCollection = ConnectionToMongo<ChoreHistoryModel>(ChoreHistoryCollection);
+            //await choreHistoryCollection.InsertOneAsync(new ChoreHistoryModel(chore));
 
+
+            // Uygulama çalışırken hata oluşursa birinci kaydetmeyi yapıp ikinci kaydetmeyi
+            // yapamadığı takdirde kritik bir işlemse veri kaybı olur(Hesaba para yatırma vb.)
+
+            var client = new MongoClient(ConnectionString);
+            using var session = await client.StartSessionAsync();
+
+            session.StartTransaction();
+
+            try
+            {
+                var db = client.GetDatabase(DatabaseName);
+                var choresCollection = db.GetCollection<ChoreModel>(ChoreCollection);
+                var filter = Builders<ChoreModel>.Filter.Eq("Id", chore.Id);
+                await choresCollection.ReplaceOneAsync(filter, chore);
+
+                var choreHistoryCollection = db.GetCollection<ChoreHistoryModel>(ChoreHistoryCollection);
+                await choreHistoryCollection.InsertOneAsync(new ChoreHistoryModel(chore));
+
+                await session.CommitTransactionAsync();
+            }
+            catch (Exception ex)
+            {
+                await session.AbortTransactionAsync();
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
