@@ -24,6 +24,8 @@ namespace MongoDb.Controllers
             var users = await _userRepository.GetAll();
             watch.Stop();
 
+            Console.WriteLine($"Dapper : {watch.Elapsed.TotalMilliseconds}");
+
             return Ok(users);
         }
 
