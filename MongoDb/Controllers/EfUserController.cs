@@ -3,32 +3,33 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Domain.Entities;
-using MongoDataAccess.DataAccess.Concrete;
+using EfDataAccess.DataAccess.Concrete;
 
 namespace MongoDb.Controllers
 {
     [Route("api/[controller]s")]
     [ApiController]
-    public class MongoUserController : ControllerBase
+    public class EfUserController : ControllerBase
     {
-        private readonly MongoUserRepository _userRepository;
 
-        public MongoUserController(MongoUserRepository userRepository)
+        private readonly EfUserRepository _userRepository;
+
+        public EfUserController(EfUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
-
         [HttpGet]
-        public async  Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll()
         {
             var watch = Stopwatch.StartNew();
             var users = await _userRepository.GetAll();
             watch.Stop();
+            
 
-
-            Console.WriteLine($"Mongo : {watch.Elapsed.TotalMilliseconds}");
+            Console.WriteLine($"Entity Framework : {watch.Elapsed.TotalMilliseconds}");
 
             return Ok(users);
+
         }
 
         [HttpGet("{id}")]
@@ -40,22 +41,21 @@ namespace MongoDb.Controllers
 
             watch.Stop();
 
-            Console.WriteLine($"Mongo : {watch.Elapsed.TotalMilliseconds}");
+            Console.WriteLine($"Entity Framework : {watch.Elapsed.TotalMilliseconds}");
             return Ok(user);
         }
         [HttpGet("searchfirstname")]
-        public async Task<IActionResult> SearchFirstName([FromQuery] string firstname)
+        public  IActionResult SearchFirstName([FromQuery ]string firstname)
         {
             var watch = Stopwatch.StartNew();
 
-            var users = await _userRepository.SearchFirstName(firstname);
+            var users =  _userRepository.SearchFirstName(firstname);
 
             watch.Stop();
 
-            Console.WriteLine($"Mongo : {watch.Elapsed.TotalMilliseconds}");
+            Console.WriteLine($"Entity Framework : {watch.Elapsed.TotalMilliseconds}");
             return Ok(users);
         }
-
 
 
         [HttpPost]
@@ -64,19 +64,5 @@ namespace MongoDb.Controllers
             await _userRepository.Create(model);
             return Ok();
         }
-
-        //[HttpPut]
-        //public async Task<IActionResult> Update([FromBody] UserModel model)
-        //{
-        //    await _userRepository.Update(model);
-        //    return Ok();
-        //}
-
-        //[HttpDelete]
-        //public async Task<IActionResult> Delete([FromBody] UserModel model)
-        //{
-        //    await _userRepository.Delete(model);
-        //    return Ok();
-        //}
     }
 }

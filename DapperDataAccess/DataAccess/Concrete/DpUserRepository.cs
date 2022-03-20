@@ -27,10 +27,19 @@ namespace DapperDataAccess.DataAccess.Concrete
 
         public async Task<UserModel> GetById(string id)
         {
-            string sql = $"Select * From UserModels Where Id = {id};";
+            string sql = $"Select * From UserModels Where Id = '{id}'";
 
             return await _dbConnection.QuerySingleOrDefaultAsync<UserModel>(sql);
         }
+
+        public async Task<List<UserModel>> SearchFirstName(string firstName)
+        {
+            string sql = $"Select * from UserModels Where FirstName LIKE '%a%'";
+
+            var result =  await _dbConnection.QueryAsync<UserModel>(sql);
+            return result.ToList();
+        }
+
 
         public async Task Create(UserModel entity)
         {

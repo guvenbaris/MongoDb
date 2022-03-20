@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.Entities;
 using MongoDataAccess.DataAccess.Abstract;
@@ -26,8 +27,16 @@ namespace MongoDataAccess.DataAccess.Concrete
             return user.SingleOrDefault();
         }
 
+        public async Task<List<UserModel>> SearchFirstName(string firstName)
+        {
+            var users = await _userCollection.FindAsync(u => u.FirstName.Contains("a"));
+            return users.ToList();
+        }
+
+
         public Task Create(UserModel entity)
         {
+            entity.Id = Guid.NewGuid().ToString();
             return _userCollection.InsertOneAsync(entity);
         }
 

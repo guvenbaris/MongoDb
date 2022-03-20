@@ -24,7 +24,7 @@ namespace Domain.Entities
         public ChoreHistoryModel(ChoreModel chore)
         {
             ChoreId = chore.Id;
-            DateCompleted = chore.LastCompleted ?? DateTime.Now;
+            DateCompleted = chore.LastCompleted;
             WhoCompleted = chore.AssignedTo;
             ChoreText = chore.ChoreText;
         }

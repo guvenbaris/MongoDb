@@ -12,6 +12,6 @@ namespace Domain.Entities
         public string ChoreText { get; set; }
         public int FrequencyInDays { get; set; }
         public UserModel? AssignedTo { get; set; }
-        public DateTime? LastCompleted { get; set; }
+        public DateTime LastCompleted { get; set; }
     }
 }

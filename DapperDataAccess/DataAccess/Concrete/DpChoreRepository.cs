@@ -35,12 +35,13 @@ namespace DapperDataAccess.DataAccess.Concrete
         public async Task Create(ChoreModel entity)
         {
             entity.Id = Guid.NewGuid().ToString();
+            string format = "yyyy-MM-dd HH:mm:ss";
+            var date = entity.LastCompleted.ToString(format);
+
             string sql = $"Insert into {DpTableName.ChoreModel} " +
-                         $"(Id,ChoreText,FrequencyInDays,AssignedTo) Values" +
-                         $" ('{entity.Id}','{entity.ChoreText}',{entity.FrequencyInDays}, '{entity.AssignedTo?.Id}');";
+                         $"(Id,ChoreText,FrequencyInDays,AssignedTo,Lastcompleted) Values" +
+                         $" ('{entity.Id}','{entity.ChoreText}',{entity.FrequencyInDays}, '{entity.AssignedTo?.Id}','{date}');";
 
-
-  
             await _dbConnection.ExecuteAsync(sql);
         }
 

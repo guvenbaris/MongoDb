@@ -1,15 +1,16 @@
 using System.Data;
 using System.Data.SqlClient;
 using DapperDataAccess.DataAccess.Concrete;
+using EfDataAccess.DataAccess.Concrete;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MongoDataAccess.DataAccess;
 using MongoDataAccess.DataAccess.Concrete;
-using MongoDb.DataOperation;
 
 namespace MongoDb
 {
@@ -32,9 +33,11 @@ namespace MongoDb
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MongoDb", Version = "v1" });
             });
 
+            services.AddDbContext<EfContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("mssql")));
+
             services.AddScoped<IDbConnection>(sp => new SqlConnection(Configuration.GetConnectionString("mssql")));
 
-            services.AddScoped<GenreRepository>();
             services.AddScoped<ChoreDataAccess>();
 
 
@@ -43,7 +46,10 @@ namespace MongoDb
 
             services.AddScoped<DpChoreRepository>();
             services.AddScoped<DpUserRepository>();
-            
+
+            services.AddScoped<EfUserRepository>();
+            services.AddScoped<EfChoreRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
