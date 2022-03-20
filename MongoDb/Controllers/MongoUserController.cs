@@ -56,8 +56,6 @@ namespace MongoDb.Controllers
             return Ok(users);
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserModel model)
         {
@@ -65,18 +63,18 @@ namespace MongoDb.Controllers
             return Ok();
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> Update([FromBody] UserModel model)
-        //{
-        //    await _userRepository.Update(model);
-        //    return Ok();
-        //}
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UserModel model)
+        {
+            await _userRepository.Update(model);
+            return Ok();
+        }
 
-        //[HttpDelete]
-        //public async Task<IActionResult> Delete([FromBody] UserModel model)
-        //{
-        //    await _userRepository.Delete(model);
-        //    return Ok();
-        //}
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] UserModel model)
+        {
+            await _userRepository.Delete(model);
+            return Ok();
+        }
     }
 }

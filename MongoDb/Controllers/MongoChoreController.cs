@@ -42,19 +42,19 @@ namespace MongoDb.Controllers
             return Ok("Added.");
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> UpdateChore([FromBody] ChoreModel model)
-        //{
-        //   await _choreRepository.Update(model);
-        //    return Ok("Updated");
-        //}
+        [HttpPut]
+        public async Task<IActionResult> UpdateChore([FromBody] ChoreModel model)
+        {
+            await _choreRepository.Update(model);
+            return Ok("Updated");
+        }
 
-        //[HttpDelete]
-        //public async Task<IActionResult> DeleteChore([FromBody] ChoreModel model)
-        //{
-        //    await _choreRepository.Delete(model);
-        //    return Ok("Deleted");
-        //}
+        [HttpDelete]
+        public async Task<IActionResult> DeleteChore([FromBody] ChoreModel model)
+        {
+            await _choreRepository.Delete(model);
+            return Ok("Deleted");
+        }
 
     }
 }
